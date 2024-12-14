@@ -1,0 +1,7 @@
+# Ignore Class Service bin folder, obj folder, and .vs folder
+/class_service/class_service/bin/
+/class_service/class_service/obj/
+
+# Ignore Profile Service bin folder, obj folder, and .vs folder
+/profile_service/profile_service/bin/
+/profile_service/profile_service/obj/
