@@ -1,0 +1,98 @@
+version: "3.9"
+services:
+  api-gateway:
+    image: liambqt/api-gateway:0.0.1
+    container_name: api-gateway-container
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - spring.cloud.gateway.routes[0].id=english_management_service
+      - spring.cloud.gateway.routes[0].uri=http://english-management-service:8080
+      - spring.cloud.gateway.routes[0].predicates[0]=Path=/api/v1/**
+      - spring.cloud.gateway.routes[0].filters[0]=StripPrefix=2
+    depends_on:
+      - english-management-service
+      - mongo
+    networks:
+      - english-management-network
+
+
+  english-management-service:
+    image: liambqt/english-management-backend:0.0.1
+    container_name: english-management-service-container
+    build:
+      context: ./EnglishManagementWebsite
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_INITDB_DATABASE=english_management
+      - MONGODB_DATABASE=english_management
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - ALLOW_EMPTY_PASSWORD=yes
+      - spring.data.mongodb.uri=mongodb://mongo:27017/english_management
+    networks:
+      - english-management-network
+    depends_on:
+      - mongo
+
+  profile-service:
+    image: liambqt/profile-service:0.0.1
+    container_name: profile-service-container
+    build:
+      context: ./profile_service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    networks:
+      - english-management-network
+    environment:
+      - MongoDb__ConnectionString=mongodb://mongo:27017
+      - MongoDb__DatabaseName=english_management
+
+  class-service:
+    image: liambqt/class-service:0.0.1
+    container_name: class-service-container
+    build:
+      context: ./class_service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    networks:
+      - english-management-network
+    environment:
+      - MongoDb__ConnectionString=mongodb://mongo:27017
+      - MongoDb__DatabaseName=english_management
+
+  english-management-platform:
+    image: liambqt/english-management-frontend:0.0.1
+    container_name: english-management-frontend-container
+    build:
+      context: ./EnglishManagementWebsite-Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    networks:
+      - english-management-network
+    depends_on:
+      english-management-service:
+        condition: service_started
+
+  mongo:
+    image: bitnami/mongodb:8.0.3
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    networks:
+      - english-management-network
+    environment:
+      - MONGO_INITDB_DATABASE=english_management
+      - MONGODB_DATABASE=english_management
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - ALLOW_EMPTY_PASSWORD=yes
+networks:
+  english-management-network:
+    driver: bridge

@@ -18,17 +18,16 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-      //},
-      //"https": {
-      //  "commandName": "Project",
-      //  "dotnetRunMessages": true,
-      //  "launchBrowser": true,
-      //  "launchUrl": "class",
-      //  "applicationUrl": "http://localhost:8082",
-      //  "environmentVariables": {
-      //    "ASPNETCORE_ENVIRONMENT": "Development"
-      //  }
-      //}
+      },
+      "https": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "launchUrl": "class",
+        "applicationUrl": "http://localhost:8082",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      }
     }
   }
-}

@@ -23,6 +23,12 @@ builder.Services.AddCors(options =>
         });
 });
 
+//// Configure Kestrel to listen on port 8081
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    options.ListenAnyIP(8082);
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -32,8 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
+//app.UseHttpsRedirection();
+//app.UseAuthorization();
 
 // Use the CORS policy
 app.UseCors("AllowAllOrigins");
